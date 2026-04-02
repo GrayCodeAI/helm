@@ -154,12 +154,12 @@ func (t *Triage) isPromptRelated(filePath, prompt string) bool {
 }
 
 // isImportOrFormatting checks if change is only imports/formatting
-func (t *Triage) isImportOrFormatting(change *FileChange) bool {
+func (t *Triage) _isImportOrFormatting(change *FileChange) bool {
 	return t.classifier.isIncidental(change)
 }
 
 // isUnrelatedFile checks if a file change is unrelated to the task
-func (t *Triage) isUnrelatedFile(change *FileChange, prompt string) bool {
+func (t *Triage) _isUnrelatedFile(change *FileChange, prompt string) bool {
 	// If not mentioned in prompt and not a standard file type
 	if !t.isPromptRelated(change.FilePath, prompt) {
 		// Check if it's a common/generated file

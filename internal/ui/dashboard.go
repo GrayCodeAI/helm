@@ -230,7 +230,6 @@ type SessionScreen struct {
 	width    int
 	height   int
 	sessions []db.Session
-	filter   string
 	selected int
 }
 

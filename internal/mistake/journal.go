@@ -240,11 +240,3 @@ func splitWords(s string) []string {
 	}
 	return words
 }
-
-// dbQuerier interface for database operations
-type dbQuerier interface {
-	CreateMistake(ctx context.Context, arg db.CreateMistakeParams) (sql.Result, error)
-	ListMistakes(ctx context.Context, sessionID string) ([]db.Mistake, error)
-	ListMistakesByType(ctx context.Context, arg db.ListMistakesByTypeParams) ([]db.Mistake, error)
-	CountMistakesByType(ctx context.Context, type_ string) (int64, error)
-}

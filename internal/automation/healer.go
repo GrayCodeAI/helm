@@ -194,11 +194,6 @@ func (h *SelfHealer) triggerRerun(ctx context.Context, owner, repo, runID string
 	return cmd.Run()
 }
 
-// analyzeFailure analyzes a CI failure and suggests a fix
-func (h *SelfHealer) analyzeFailure(status CIStatus) string {
-	return fmt.Sprintf("analyzed failure in %s", status.ID)
-}
-
 // FailureAnalysis represents an analysis of a CI failure
 type FailureAnalysis struct {
 	Type         string

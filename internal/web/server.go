@@ -76,7 +76,7 @@ func (s *Server) ServeHTTP(w http.ResponseWriter, r *http.Request) {
 }
 
 // broadcastSSE sends a message to all SSE clients
-func (s *Server) broadcastSSE(msg string) {
+func (s *Server) _broadcastSSE(msg string) {
 	s.sseMu.RLock()
 	defer s.sseMu.RUnlock()
 	for _, ch := range s.sseClients {

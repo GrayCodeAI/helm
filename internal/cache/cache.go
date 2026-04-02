@@ -184,8 +184,7 @@ func (c *MemoryCache) Stats() map[string]interface{} {
 
 // RedisCache is a Redis cache implementation (stub)
 type RedisCache struct {
-	addr   string
-	client interface{}
+	addr string
 }
 
 // NewRedisCache creates a new Redis cache
