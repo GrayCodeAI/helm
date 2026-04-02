@@ -8,6 +8,7 @@ import (
 	"os"
 	"path/filepath"
 	"sort"
+	"strconv"
 	"strings"
 
 	_ "modernc.org/sqlite"
@@ -128,13 +129,20 @@ func (db *DB) migrate() error {
 			continue
 		}
 		name := e.Name()
-		if !strings.HasSuffix(name, ".sql") {
+		if !strings.HasSuffix(name, ".sql") || strings.Contains(name, ".down.") {
 			continue
 		}
-		var version int
-		fmt.Sscanf(name, "%d", &version)
-		files = append(files, migFile{version: version, name: name})
+		parts := strings.SplitN(name, "_", 2)
+		if len(parts) < 2 {
+			continue
+		}
+		ver, err := strconv.Atoi(parts[0])
+		if err != nil {
+			continue
+		}
+		files = append(files, migFile{version: ver, name: name})
 	}
+
 	sort.Slice(files, func(i, j int) bool {
 		return files[i].version < files[j].version
 	})
@@ -150,12 +158,24 @@ func (db *DB) migrate() error {
 			return fmt.Errorf("read migration %s: %w", f.name, err)
 		}
 
-		if _, err := db.sqlDB.Exec(string(content)); err != nil {
+		// Execute migration in transaction
+		tx, err := db.sqlDB.Begin()
+		if err != nil {
+			return fmt.Errorf("begin migration tx: %w", err)
+		}
+
+		if _, err := tx.Exec(string(content)); err != nil {
+			tx.Rollback()
 			return fmt.Errorf("apply migration %s: %w", f.name, err)
 		}
 
-		if _, err := db.sqlDB.Exec("INSERT OR IGNORE INTO schema_migrations (version) VALUES (?)", f.version); err != nil {
+		if _, err := tx.Exec("INSERT INTO schema_migrations (version) VALUES (?)", f.version); err != nil {
+			tx.Rollback()
 			return fmt.Errorf("record migration %s: %w", f.name, err)
+		}
+
+		if err := tx.Commit(); err != nil {
+			return fmt.Errorf("commit migration %s: %w", f.name, err)
 		}
 	}
 
