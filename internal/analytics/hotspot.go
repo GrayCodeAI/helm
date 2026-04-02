@@ -102,9 +102,25 @@ func (ha *HotspotAnalyzer) getChangeFrequency(ctx context.Context) (map[string]i
 }
 
 func (ha *HotspotAnalyzer) getComplexityMetrics(ctx context.Context) (map[string]int, error) {
-	// This would use a tool like gocyclo for Go, or similar for other languages
-	// For now, return empty map
-	return make(map[string]int), nil
+	// Use line count as a proxy for complexity
+	cmd := exec.CommandContext(ctx, "find", ha.repoPath, "-name", "*.go", "-exec", "wc", "-l", "{}", "+")
+	output, err := cmd.Output()
+	if err != nil {
+		return make(map[string]int), nil
+	}
+
+	metrics := make(map[string]int)
+	lines := strings.Split(string(output), "\n")
+	for _, line := range lines {
+		parts := strings.Fields(line)
+		if len(parts) >= 2 {
+			count, _ := strconv.Atoi(parts[0])
+			file := parts[1]
+			relPath, _ := filepath.Rel(ha.repoPath, file)
+			metrics[relPath] = count
+		}
+	}
+	return metrics, nil
 }
 
 func (ha *HotspotAnalyzer) estimateErrorCount(file string, changes int) int {

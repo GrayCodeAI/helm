@@ -3,6 +3,7 @@ package automation
 
 import (
 	"context"
+	"encoding/json"
 	"fmt"
 	"os"
 	"os/exec"
@@ -349,8 +350,7 @@ func (p *IssueToPRPipeline) MergePR(ctx context.Context, owner, repo string, prN
 }
 
 func parseJSON(data []byte, v interface{}) error {
-	// Simple JSON parsing - in production use encoding/json
-	return nil
+	return json.Unmarshal(data, v)
 }
 
 // ListPendingPRs lists PRs waiting for review

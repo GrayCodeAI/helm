@@ -33,12 +33,18 @@ type Patterns struct {
 // Detect detects patterns from the codebase
 func (d *Detector) Detect() (*Patterns, error) {
 	p := &Patterns{
-		Indentation: "tabs",
-		LineLength:  80,
+		Indentation:      "tabs",
+		LineLength:       80,
+		NamingConvention: "Go-style (Pascal for exported, camel for unexported)",
+		ErrorHandling:    "error-return",
+		TestStyle:        "table-driven",
+		FileOrganization: "package-per-directory",
+		ImportStyle:      "grouped (stdlib, external, internal)",
+		CommentStyle:     "godoc-style",
 	}
 
 	// Would walk the repository and analyze code
-	// For now, return defaults
+	// For now, return Go defaults
 
 	return p, nil
 }

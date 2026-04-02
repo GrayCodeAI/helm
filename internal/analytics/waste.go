@@ -101,27 +101,90 @@ func (wd *WasteDetector) getTotalCost(ctx context.Context, project string, start
 }
 
 func (wd *WasteDetector) detectDiscardedSessions(ctx context.Context, project string, startDate, endDate time.Time) (int, float64, error) {
-	// Sessions that were started but never completed (no accepted changes)
-	// This would need additional tracking in the database
-	// For now, return placeholder data
-	return 3, 4.20, nil
+	// Sessions that were started but failed or were paused
+	sessions, err := wd.querier.ListSessions(ctx, db.ListSessionsParams{
+		Project: project,
+		Limit:   1000,
+	})
+	if err != nil {
+		return 0, 0, err
+	}
+
+	count := 0
+	var cost float64
+	for _, s := range sessions {
+		if s.Status == "failed" || s.Status == "paused" {
+			count++
+			cost += s.Cost
+		}
+	}
+	return count, cost, nil
 }
 
 func (wd *WasteDetector) detectRejectedDiffs(ctx context.Context, project string, startDate, endDate time.Time) (int, float64, error) {
-	// File changes that were rejected
-	// This would query the file_changes table for rejected changes
-	return 12, 2.80, nil
+	// File changes that were rejected (classification = rejected)
+	// Estimate based on failed sessions
+	sessions, err := wd.querier.ListSessions(ctx, db.ListSessionsParams{
+		Project: project,
+		Limit:   1000,
+	})
+	if err != nil {
+		return 0, 0, err
+	}
+
+	count := 0
+	var cost float64
+	for _, s := range sessions {
+		if s.Status == "failed" {
+			count += 3           // Estimate 3 rejected diffs per failed session
+			cost += s.Cost * 0.3 // Estimate 30% waste
+		}
+	}
+	return count, cost, nil
 }
 
 func (wd *WasteDetector) detectRetryLoops(ctx context.Context, project string, startDate, endDate time.Time) (int, float64, error) {
-	// Sessions that required multiple retries
-	return 2, 3.10, nil
+	// Sessions with high token usage relative to output (indicating retries)
+	sessions, err := wd.querier.ListSessions(ctx, db.ListSessionsParams{
+		Project: project,
+		Limit:   1000,
+	})
+	if err != nil {
+		return 0, 0, err
+	}
+
+	count := 0
+	var cost float64
+	for _, s := range sessions {
+		// High input/output ratio suggests retries
+		if s.OutputTokens > 0 && float64(s.InputTokens)/float64(s.OutputTokens) > 5 {
+			count++
+			cost += s.Cost * 0.5
+		}
+	}
+	return count, cost, nil
 }
 
 func (wd *WasteDetector) detectOverEngineered(ctx context.Context, project string, startDate, endDate time.Time) (int, float64, error) {
-	// Sessions where agent did more than necessary
-	// This would compare complexity of task vs changes made
-	return 1, 1.90, nil
+	// Sessions with very high token counts for simple tasks
+	sessions, err := wd.querier.ListSessions(ctx, db.ListSessionsParams{
+		Project: project,
+		Limit:   1000,
+	})
+	if err != nil {
+		return 0, 0, err
+	}
+
+	count := 0
+	var cost float64
+	for _, s := range sessions {
+		// Very high token counts suggest over-engineering
+		if s.InputTokens+s.OutputTokens > 50000 {
+			count++
+			cost += s.Cost * 0.4
+		}
+	}
+	return count, cost, nil
 }
 
 func (wd *WasteDetector) calculateTrend(ctx context.Context, project string, startDate, endDate time.Time) string {

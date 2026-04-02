@@ -69,17 +69,53 @@ func (ta *TrendAnalyzer) GetCostTrend(ctx context.Context, project string, days 
 	return points, nil
 }
 
-// GetProductivityTrend gets tasks completed over time
+// GetProductivityTrend gets sessions completed over time
 func (ta *TrendAnalyzer) GetProductivityTrend(ctx context.Context, project string, days int) ([]DataPoint, error) {
-	// This would track sessions completed over time
-	// For now, return placeholder data
-	return []DataPoint{}, nil
+	sessions, err := ta.querier.ListSessions(ctx, db.ListSessionsParams{
+		Project: project,
+		Limit:   1000,
+	})
+	if err != nil {
+		return nil, fmt.Errorf("list sessions: %w", err)
+	}
+
+	byDate := make(map[string]int)
+	for _, s := range sessions {
+		if s.Status == "done" && len(s.StartedAt) >= 10 {
+			date := s.StartedAt[:10]
+			byDate[date]++
+		}
+	}
+
+	var points []DataPoint
+	for date, count := range byDate {
+		t, _ := time.Parse("2006-01-02", date)
+		points = append(points, DataPoint{
+			Date:  t,
+			Value: float64(count),
+		})
+	}
+
+	return points, nil
 }
 
-// GetModelTrend gets trend for a specific model
+// GetModelTrend gets usage trend for a specific model
 func (ta *TrendAnalyzer) GetModelTrend(ctx context.Context, model string, days int) ([]DataPoint, error) {
-	// Get model performance over time
-	return []DataPoint{}, nil
+	performances, err := ta.querier.ListModelPerformance(ctx)
+	if err != nil {
+		return nil, fmt.Errorf("list model performance: %w", err)
+	}
+
+	var points []DataPoint
+	for _, p := range performances {
+		if p.Model == model {
+			points = append(points, DataPoint{
+				Value: float64(p.Attempts),
+			})
+		}
+	}
+
+	return points, nil
 }
 
 // GenerateTrendReport generates a comprehensive trend report
