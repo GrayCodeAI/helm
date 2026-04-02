@@ -1,0 +1,78 @@
+# GoReleaser configuration
+# https://goreleaser.com
+
+version: 2
+
+before:
+  hooks:
+    - go mod tidy
+
+builds:
+  - id: helm
+    main: ./cmd/helm
+    binary: helm
+    env:
+      - CGO_ENABLED=0
+    goos:
+      - linux
+      - darwin
+    goarch:
+      - amd64
+      - arm64
+    ldflags:
+      - -s -w -X main.Version={{.Version}} -X main.Commit={{.Commit}} -X main.Date={{.Date}}
+
+archives:
+  - id: default
+    formats:
+      - tar.gz
+    name_template: >-
+      {{ .ProjectName }}_
+      {{- .Version }}_
+      {{- .Os }}_
+      {{- .Arch }}
+    files:
+      - README.md
+      - LICENSE
+
+checksum:
+  name_template: 'checksums.txt'
+
+snapshot:
+  version_template: "{{ incpatch .Version }}-next"
+
+changelog:
+  sort: asc
+  filters:
+    exclude:
+      - '^docs:'
+      - '^test:'
+      - '^chore:'
+      - Merge pull request
+      - Merge branch
+
+release:
+  draft: false
+  prerelease: auto
+  mode: append
+  name_template: "v{{.Version}}"
+  header: |
+    ## HELM v{{.Version}}
+
+    Personal coding agent control plane.
+
+    ### Installation
+
+    **Quick Install:**
+    ```bash
+    curl -fsSL https://raw.githubusercontent.com/yourname/helm/main/install.sh | bash
+    ```
+
+    **Go Install:**
+    ```bash
+    go install github.com/yourname/helm/cmd/helm@v{{.Version}}
+    ```
+  footer: |
+    ---
+
+    **Full Changelog**: https://github.com/yourname/helm/compare/{{ .PreviousTag }}...{{ .Tag }}

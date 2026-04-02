@@ -1,0 +1,48 @@
+# HELM Configuration Example
+# Copy to helm.toml or ~/.helm/helm.toml
+
+[providers.anthropic]
+api_key_env = "ANTHROPIC_API_KEY"
+default_model = "claude-sonnet-4-20250514"
+
+[providers.openai]
+api_key_env = "OPENAI_API_KEY"
+default_model = "gpt-4o"
+
+[providers.google]
+api_key_env = "GOOGLE_API_KEY"
+default_model = "gemini-2.5-pro"
+
+[providers.ollama]
+base_url = "http://localhost:11434"
+default_model = "qwen2.5-coder:32b"
+
+[providers.openrouter]
+api_key_env = "OPENROUTER_API_KEY"
+default_model = "anthropic/claude-sonnet-4"
+
+[router]
+fallback_chain = ["anthropic", "openai", "openrouter"]
+rate_limit_retry = true
+max_retries = 3
+
+[budget]
+daily_limit = 10.00
+weekly_limit = 50.00
+monthly_limit = 150.00
+warning_pct = 0.80
+action_on_limit = "pause"
+
+[quality_gates]
+lint = true
+test = false
+security = false
+complexity = false
+build = true
+
+[automation.nightly]
+enabled = false
+time = "02:00"
+timezone = "America/New_York"
+tasks = ["deps", "lint"]
+max_cost_per_run = 2.00

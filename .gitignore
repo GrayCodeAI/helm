@@ -1,0 +1,11 @@
+*.swp
+*.swo
+*~
+.DS_Store
+build/
+helm
+.helm/
+.env
+*.log
+coverage.out
+race.log

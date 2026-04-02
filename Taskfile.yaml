@@ -1,0 +1,70 @@
+# https://taskfile.dev
+
+version: "3"
+
+env:
+  CGO_ENABLED: 0
+
+tasks:
+  build:
+    desc: Build the binary
+    cmds:
+      - go build -o build/helm ./cmd/helm
+
+  run:
+    desc: Run the application
+    cmds:
+      - go run ./cmd/helm {{.CLI_ARGS}}
+
+  test:
+    desc: Run tests
+    cmds:
+      - go test -race -failfast ./... {{.CLI_ARGS}}
+
+  test:cover:
+    desc: Run tests with coverage
+    cmds:
+      - go test -race -cover ./...
+
+  fmt:
+    desc: Format code with gofumpt
+    cmds:
+      - gofumpt -w .
+
+  lint:
+    desc: Run golangci-lint
+    cmds:
+      - golangci-lint run --timeout=5m
+
+  lint:fix:
+    desc: Run golangci-lint with auto-fix
+    cmds:
+      - golangci-lint run --fix --timeout=5m
+
+  vet:
+    desc: Run go vet
+    cmds:
+      - go vet ./...
+
+  clean:
+    desc: Clean build artifacts
+    cmds:
+      - rm -rf build/
+
+  install:
+    desc: Install to GOPATH bin
+    cmds:
+      - go install ./cmd/helm
+
+  sqlc:
+    desc: Generate SQL code
+    cmds:
+      - sqlc generate
+
+  verify:
+    desc: Run all verification checks
+    cmds:
+      - task: fmt
+      - task: build
+      - task: test
+      - task: vet

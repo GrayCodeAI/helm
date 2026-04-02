@@ -1,0 +1,101 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: helm
+  namespace: helm-system
+  labels:
+    app: helm
+spec:
+  replicas: 1
+  selector:
+    matchLabels:
+      app: helm
+  template:
+    metadata:
+      labels:
+        app: helm
+    spec:
+      containers:
+      - name: helm
+        image: ghcr.io/yourname/helm:latest
+        ports:
+        - containerPort: 8080
+          name: http
+        - containerPort: 9090
+          name: metrics
+        env:
+        - name: HELM_LOG_LEVEL
+          value: "info"
+        - name: HELM_LOG_FORMAT
+          value: "json"
+        - name: HELM_SERVER_PORT
+          value: "8080"
+        - name: HELM_METRICS_ENABLED
+          value: "true"
+        - name: HELM_METRICS_PORT
+          value: "9090"
+        volumeMounts:
+        - name: data
+          mountPath: /data
+        - name: config
+          mountPath: /config
+        resources:
+          requests:
+            memory: "128Mi"
+            cpu: "100m"
+          limits:
+            memory: "512Mi"
+            cpu: "500m"
+        livenessProbe:
+          httpGet:
+            path: /health/live
+            port: 8080
+          initialDelaySeconds: 10
+          periodSeconds: 30
+          timeoutSeconds: 3
+        readinessProbe:
+          httpGet:
+            path: /health/ready
+            port: 8080
+          initialDelaySeconds: 5
+          periodSeconds: 10
+          timeoutSeconds: 3
+      volumes:
+      - name: data
+        persistentVolumeClaim:
+          claimName: helm-data
+      - name: config
+        configMap:
+          name: helm-config
+---
+apiVersion: v1
+kind: PersistentVolumeClaim
+metadata:
+  name: helm-data
+  namespace: helm-system
+spec:
+  accessModes:
+    - ReadWriteOnce
+  resources:
+    requests:
+      storage: 1Gi
+---
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: helm-config
+  namespace: helm-system
+data:
+  helm.toml: |
+    [server]
+    enabled = true
+    host = "0.0.0.0"
+    port = 8080
+
+    [database]
+    path = "/data/helm.db"
+    enable_wal = true
+
+    [metrics]
+    enabled = true
+    port = 9090
