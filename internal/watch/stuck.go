@@ -218,7 +218,6 @@ func getRecentActivities(activities []Activity, n int) []Activity {
 // AutoPauser automatically pauses stuck sessions
 type AutoPauser struct {
 	detector *StuckDetector
-	actions  []PauseAction
 }
 
 // PauseAction handles pause events

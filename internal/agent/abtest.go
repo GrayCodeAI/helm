@@ -9,8 +9,6 @@ import (
 
 // ABTest runs parallel agents and compares results
 type ABTest struct {
-	agentA     *Agent
-	agentB     *Agent
 	comparator *Comparator
 }
 

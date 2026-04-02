@@ -15,7 +15,6 @@ type Client struct {
 	Command string
 	Args    []string
 	Running bool
-	mu      sync.Mutex
 }
 
 // Manager manages LSP clients

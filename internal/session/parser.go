@@ -2,7 +2,6 @@ package session
 
 import (
 	"bufio"
-	"encoding/json"
 	"fmt"
 	"io"
 	"os"
@@ -59,18 +58,4 @@ func parseTime(s string) time.Time {
 		}
 	}
 	return time.Time{}
-}
-
-func firstNonEmpty(a, b string) string {
-	if a != "" {
-		return a
-	}
-	return b
-}
-
-func safeUnmarshal(data []byte, v interface{}) error {
-	if len(data) == 0 {
-		return nil
-	}
-	return json.Unmarshal(data, v)
 }
