@@ -65,14 +65,14 @@ release:
 
     **Quick Install:**
     ```bash
-    curl -fsSL https://raw.githubusercontent.com/yourname/helm/main/install.sh | bash
+    curl -fsSL https://raw.githubusercontent.com/GrayCodeAI/helm/main/install.sh | bash
     ```
 
     **Go Install:**
     ```bash
-    go install github.com/yourname/helm/cmd/helm@v{{.Version}}
+    go install github.com/GrayCodeAI/helm/cmd/helm@v{{.Version}}
     ```
   footer: |
     ---
 
-    **Full Changelog**: https://github.com/yourname/helm/compare/{{ .PreviousTag }}...{{ .Tag }}
+    **Full Changelog**: https://github.com/GrayCodeAI/helm/compare/{{ .PreviousTag }}...{{ .Tag }}

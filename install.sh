@@ -1,10 +1,10 @@
 #!/usr/bin/env bash
 #
 # HELM Installer
-# https://github.com/yourname/helm
+# https://github.com/GrayCodeAI/helm
 #
 # Usage:
-#   curl -fsSL https://raw.githubusercontent.com/yourname/helm/main/install.sh | bash
+#   curl -fsSL https://raw.githubusercontent.com/GrayCodeAI/helm/main/install.sh | bash
 #
 
 set -e
@@ -18,7 +18,7 @@ NC='\033[0m'
 BINARY_NAME="helm"
 INSTALL_DIR="${HOME}/.local/bin"
 VERSION="latest"
-REPO="yourname/helm"
+REPO="GrayCodeAI/helm"
 
 echo -e "${BLUE}╔════════════════════════════════════════╗${NC}"
 echo -e "${BLUE}║            HELM Installer              ║${NC}"

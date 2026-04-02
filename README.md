@@ -19,10 +19,10 @@ A unified TUI-first control plane for personal coders to manage, monitor, and op
 
 ```bash
 # Install
-curl -fsSL https://raw.githubusercontent.com/yourname/helm/main/install.sh | bash
+curl -fsSL https://raw.githubusercontent.com/GrayCodeAI/helm/main/install.sh | bash
 
 # Or build from source
-git clone https://github.com/yourname/helm.git
+git clone https://github.com/GrayCodeAI/helm.git
 cd helm
 go build ./cmd/helm
 
