@@ -2,6 +2,7 @@
 package sync
 
 import (
+	"bytes"
 	"context"
 	"database/sql"
 	"encoding/json"
@@ -42,8 +43,7 @@ func (ts *TeamSync) SyncMemory(ctx context.Context, project string) error {
 	})
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPost,
-		fmt.Sprintf("%s/api/sync/memory", ts.dbURL), nil)
-	req.Body = &readCloser{data: payload}
+		fmt.Sprintf("%s/api/sync/memory", ts.dbURL), bytes.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := ts.httpClient.Do(req)
@@ -95,8 +95,7 @@ func (ts *TeamSync) SyncPrompts(ctx context.Context) error {
 	})
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPost,
-		fmt.Sprintf("%s/api/sync/prompts", ts.dbURL), nil)
-	req.Body = &readCloser{data: payload}
+		fmt.Sprintf("%s/api/sync/prompts", ts.dbURL), bytes.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := ts.httpClient.Do(req)
@@ -140,8 +139,7 @@ func (ts *TeamSync) SyncPerformance(ctx context.Context) error {
 	})
 
 	req, _ := http.NewRequestWithContext(ctx, http.MethodPost,
-		fmt.Sprintf("%s/api/sync/performance", ts.dbURL), nil)
-	req.Body = &readCloser{data: payload}
+		fmt.Sprintf("%s/api/sync/performance", ts.dbURL), bytes.NewReader(payload))
 	req.Header.Set("Content-Type", "application/json")
 
 	resp, err := ts.httpClient.Do(req)
@@ -348,23 +346,4 @@ func (ts *TeamSync) GetSyncStatus(ctx context.Context) (*SyncStatus, error) {
 	}
 
 	return &status, nil
-}
-
-// readCloser implements io.ReadCloser for byte slices
-type readCloser struct {
-	data []byte
-	pos  int
-}
-
-func (r *readCloser) Read(p []byte) (n int, err error) {
-	if r.pos >= len(r.data) {
-		return 0, fmt.Errorf("EOF")
-	}
-	n = copy(p, r.data[r.pos:])
-	r.pos += n
-	return n, nil
-}
-
-func (r *readCloser) Close() error {
-	return nil
 }
