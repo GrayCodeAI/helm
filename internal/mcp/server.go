@@ -103,10 +103,10 @@ func (s *Server) handleMemorySet(w http.ResponseWriter, r *http.Request) {
 	}
 
 	var params struct {
-		Project string  `json:"project"`
-		Type    string  `json:"type"`
-		Key     string  `json:"key"`
-		Value   string  `json:"value"`
+		Project    string  `json:"project"`
+		Type       string  `json:"type"`
+		Key        string  `json:"key"`
+		Value      string  `json:"value"`
 		Confidence float64 `json:"confidence,omitempty"`
 	}
 

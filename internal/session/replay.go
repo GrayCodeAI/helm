@@ -68,7 +68,9 @@ func (sr *SessionReplay) LoadSession(ctx context.Context, sessionID string) (*Re
 	for i, msg := range messages {
 		var toolCalls []ToolCall
 		if msg.ToolCalls.Valid {
-			json.Unmarshal([]byte(msg.ToolCalls.String), &toolCalls)
+			if err := json.Unmarshal([]byte(msg.ToolCalls.String), &toolCalls); err != nil {
+				// Silently skip invalid tool calls - they're not critical
+			}
 		}
 
 		replay.Messages[i] = ReplayMessage{

@@ -19,13 +19,13 @@ type HotspotAnalyzer struct {
 
 // Hotspot represents a file with high change/error frequency
 type Hotspot struct {
-	FilePath      string
-	ChangeCount   int
-	ErrorCount    int
-	Complexity    int
-	RiskScore     float64
-	LastModified  string
-	Contributors  []string
+	FilePath     string
+	ChangeCount  int
+	ErrorCount   int
+	Complexity   int
+	RiskScore    float64
+	LastModified string
+	Contributors []string
 }
 
 // NewHotspotAnalyzer creates a new hotspot analyzer
@@ -183,11 +183,11 @@ func GetRiskLevel(score float64) string {
 
 // HotspotReport represents a comprehensive hotspot report
 type HotspotReport struct {
-	Hotspots       []Hotspot
-	HighRiskCount  int
+	Hotspots        []Hotspot
+	HighRiskCount   int
 	MediumRiskCount int
-	LowRiskCount   int
-	TopFiles       []string
+	LowRiskCount    int
+	TopFiles        []string
 	Recommendations []string
 }
 
@@ -260,11 +260,11 @@ func NewComplexityAnalyzer(repoPath string) *ComplexityAnalyzer {
 
 // FileComplexity represents complexity metrics for a file
 type FileComplexity struct {
-	FilePath           string
-	LinesOfCode        int
-	CyclomaticComplexity int
-	CognitiveComplexity  int
-	FunctionCount      int
+	FilePath              string
+	LinesOfCode           int
+	CyclomaticComplexity  int
+	CognitiveComplexity   int
+	FunctionCount         int
 	AverageFunctionLength int
 }
 

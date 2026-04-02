@@ -17,10 +17,10 @@ type ReportEntry struct {
 
 // Report aggregates cost data for display.
 type Report struct {
-	Entries    []ReportEntry
-	TotalCost  float64
+	Entries     []ReportEntry
+	TotalCost   float64
 	TotalTokens int64
-	Period     string
+	Period      string
 }
 
 // FormatReport returns a human-readable cost report.

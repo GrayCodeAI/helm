@@ -8,16 +8,16 @@ import (
 
 // TrustScore tracks agent reliability per task type
 type TrustScore struct {
-	TaskType     string
-	Attempts     int
-	Successes    int
-	Failures     int
-	Rejections   int
-	LastSuccess  *time.Time
-	LastFailure  *time.Time
-	AvgCost      float64
-	AvgDuration  time.Duration
-	UpdatedAt    time.Time
+	TaskType    string
+	Attempts    int
+	Successes   int
+	Failures    int
+	Rejections  int
+	LastSuccess *time.Time
+	LastFailure *time.Time
+	AvgCost     float64
+	AvgDuration time.Duration
+	UpdatedAt   time.Time
 }
 
 // SuccessRate returns the success rate (0-1)

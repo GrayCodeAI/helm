@@ -7,9 +7,9 @@ import (
 )
 
 const (
-	halfLifeDays    = 30
-	minConfidence   = 0.1
-	decayThreshold  = 0.05
+	halfLifeDays   = 30
+	minConfidence  = 0.1
+	decayThreshold = 0.05
 )
 
 // ApplyForgettingCurve applies a forgetting curve to all memories.

@@ -34,16 +34,16 @@ func NewGlobalMemoryStore() (*GlobalMemoryStore, error) {
 
 // GlobalMemoryEntry represents a global memory
 type GlobalMemoryEntry struct {
-	ID           string    `json:"id"`
-	Key          string    `json:"key"`
-	Value        string    `json:"value"`
-	Type         string    `json:"type"`
-	SourceProject string   `json:"source_project"`
-	Tags         []string  `json:"tags"`
-	Confidence   float64   `json:"confidence"`
-	CreatedAt    time.Time `json:"created_at"`
-	UpdatedAt    time.Time `json:"updated_at"`
-	UsageCount   int       `json:"usage_count"`
+	ID            string    `json:"id"`
+	Key           string    `json:"key"`
+	Value         string    `json:"value"`
+	Type          string    `json:"type"`
+	SourceProject string    `json:"source_project"`
+	Tags          []string  `json:"tags"`
+	Confidence    float64   `json:"confidence"`
+	CreatedAt     time.Time `json:"created_at"`
+	UpdatedAt     time.Time `json:"updated_at"`
+	UsageCount    int       `json:"usage_count"`
 }
 
 // Store stores a global memory
@@ -230,9 +230,9 @@ type ConflictResolver struct{}
 
 // Conflict represents a memory conflict
 type Conflict struct {
-	GlobalMemory   GlobalMemoryEntry
-	ProjectMemory  GlobalMemoryEntry
-	ConflictType   string // "value_mismatch", "confidence_diff"
+	GlobalMemory  GlobalMemoryEntry
+	ProjectMemory GlobalMemoryEntry
+	ConflictType  string // "value_mismatch", "confidence_diff"
 }
 
 // Resolve resolves a conflict

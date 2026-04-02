@@ -160,10 +160,10 @@ func (r *Replayer) getChangesUpTo(replaySession *ReplaySession, position int) []
 
 // ReplayOptions configures replay behavior
 type ReplayOptions struct {
-	Speed      float64 // 1.0 = normal, 2.0 = 2x, etc.
-	AutoPlay   bool
-	ShowDiffs  bool
-	ShowTools  bool
+	Speed     float64 // 1.0 = normal, 2.0 = 2x, etc.
+	AutoPlay  bool
+	ShowDiffs bool
+	ShowTools bool
 }
 
 // DefaultReplayOptions returns default options

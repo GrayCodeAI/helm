@@ -20,21 +20,21 @@ func NewDetector(repoPath string) *Detector {
 
 // Patterns holds detected patterns
 type Patterns struct {
-	NamingConvention   string
-	ErrorHandling      string
-	TestStyle          string
-	FileOrganization   string
-	ImportStyle        string
-	CommentStyle       string
-	Indentation        string
-	LineLength         int
+	NamingConvention string
+	ErrorHandling    string
+	TestStyle        string
+	FileOrganization string
+	ImportStyle      string
+	CommentStyle     string
+	Indentation      string
+	LineLength       int
 }
 
 // Detect detects patterns from the codebase
 func (d *Detector) Detect() (*Patterns, error) {
 	p := &Patterns{
-		Indentation:  "tabs",
-		LineLength:   80,
+		Indentation: "tabs",
+		LineLength:  80,
 	}
 
 	// Would walk the repository and analyze code

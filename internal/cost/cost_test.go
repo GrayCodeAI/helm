@@ -104,8 +104,6 @@ func (m *mockCostQuerier) UpsertBudget(ctx context.Context, arg db.UpsertBudgetP
 	return nil
 }
 
-
-
 func TestCalculator(t *testing.T) {
 	t.Parallel()
 	calc := NewCalculator()

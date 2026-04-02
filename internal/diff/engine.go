@@ -45,20 +45,20 @@ type FileChange struct {
 
 // Hunk represents a single contiguous change
 type Hunk struct {
-	OldStart   int
-	OldLines   int
-	NewStart   int
-	NewLines   int
-	Lines      []Line
-	Accepted   *bool
+	OldStart int
+	OldLines int
+	NewStart int
+	NewLines int
+	Lines    []Line
+	Accepted *bool
 }
 
 // Line represents a single line in a diff
 type Line struct {
-	Type     LineType
-	Content  string
-	OldNum   int
-	NewNum   int
+	Type    LineType
+	Content string
+	OldNum  int
+	NewNum  int
 }
 
 // LineType indicates the type of line in a diff

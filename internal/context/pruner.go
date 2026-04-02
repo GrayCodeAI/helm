@@ -26,8 +26,8 @@ func NewPruner(catalog *provider.ModelCatalog) *Pruner {
 type Config struct {
 	Model            string
 	Prompt           string
-	HardLimit        int // Never exceed this
-	SoftLimit        int // Warn when approaching this
+	HardLimit        int      // Never exceed this
+	SoftLimit        int      // Warn when approaching this
 	PreservePatterns []string // File patterns to always preserve
 }
 
@@ -53,10 +53,10 @@ const (
 
 // Result represents the pruned context
 type Result struct {
-	Files         []File
-	TotalTokens   int
-	DroppedFiles  []string
-	Warnings      []string
+	Files        []File
+	TotalTokens  int
+	DroppedFiles []string
+	Warnings     []string
 }
 
 // Prune selects relevant files to fit within token budget
@@ -298,8 +298,8 @@ func (b *Budget) Use(amount int) {
 
 // SmartPruner combines context pruning with budget management
 type SmartPruner struct {
-	pruner  *Pruner
-	memory  *memory.Engine
+	pruner *Pruner
+	memory *memory.Engine
 }
 
 // NewSmartPruner creates a smart pruner with memory awareness

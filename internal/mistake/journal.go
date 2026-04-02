@@ -23,15 +23,15 @@ type DBQuerier interface {
 type Type string
 
 const (
-	TypeRejectedDiff   Type = "rejected_diff"
-	TypeTestFailure    Type = "test_failure"
-	TypeLintError      Type = "lint_error"
-	TypeCompileError   Type = "compile_error"
-	TypeTimeout        Type = "timeout"
-	TypeLoopDetected   Type = "loop_detected"
-	TypeWrongFile      Type = "wrong_file"
-	TypeRuntimeError   Type = "runtime_error"
-	TypeSecurityIssue  Type = "security_issue"
+	TypeRejectedDiff  Type = "rejected_diff"
+	TypeTestFailure   Type = "test_failure"
+	TypeLintError     Type = "lint_error"
+	TypeCompileError  Type = "compile_error"
+	TypeTimeout       Type = "timeout"
+	TypeLoopDetected  Type = "loop_detected"
+	TypeWrongFile     Type = "wrong_file"
+	TypeRuntimeError  Type = "runtime_error"
+	TypeSecurityIssue Type = "security_issue"
 )
 
 // Entry represents a single mistake in the journal

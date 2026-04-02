@@ -14,11 +14,11 @@ type StuckDetector struct {
 
 // StuckThresholds configures stuck detection
 type StuckThresholds struct {
-	RepeatedToolCalls   int
-	RepeatedErrors      int
-	NoProgressTurns     int
-	TokenSpikePercent   float64
-	MaxDuration         time.Duration
+	RepeatedToolCalls int
+	RepeatedErrors    int
+	NoProgressTurns   int
+	TokenSpikePercent float64
+	MaxDuration       time.Duration
 }
 
 // DefaultStuckThresholds returns default thresholds
@@ -39,9 +39,9 @@ func NewStuckDetector(thresholds StuckThresholds) *StuckDetector {
 
 // StuckSignal represents a stuck detection signal
 type StuckSignal struct {
-	Type        string
-	Description string
-	Severity    string // "low", "medium", "high"
+	Type            string
+	Description     string
+	Severity        string // "low", "medium", "high"
 	SuggestedAction string
 }
 
@@ -56,9 +56,9 @@ func (sd *StuckDetector) Analyze(activities []Activity) []StuckSignal {
 	// Check for repeated tool calls
 	if repeated := sd.detectRepeatedToolCalls(activities); repeated > 0 {
 		signals = append(signals, StuckSignal{
-			Type:        "repeated_tool_calls",
-			Description: fmt.Sprintf("Same tool called %d times", repeated),
-			Severity:    "high",
+			Type:            "repeated_tool_calls",
+			Description:     fmt.Sprintf("Same tool called %d times", repeated),
+			Severity:        "high",
 			SuggestedAction: "Consider adjusting prompt or taking manual control",
 		})
 	}
@@ -66,9 +66,9 @@ func (sd *StuckDetector) Analyze(activities []Activity) []StuckSignal {
 	// Check for repeated errors
 	if errors := sd.detectRepeatedErrors(activities); errors > 0 {
 		signals = append(signals, StuckSignal{
-			Type:        "repeated_errors",
-			Description: fmt.Sprintf("Same error occurred %d times", errors),
-			Severity:    "high",
+			Type:            "repeated_errors",
+			Description:     fmt.Sprintf("Same error occurred %d times", errors),
+			Severity:        "high",
 			SuggestedAction: "Review error message and adjust approach",
 		})
 	}
@@ -76,9 +76,9 @@ func (sd *StuckDetector) Analyze(activities []Activity) []StuckSignal {
 	// Check for no progress
 	if sd.detectNoProgress(activities) {
 		signals = append(signals, StuckSignal{
-			Type:        "no_progress",
-			Description: "No file changes in recent turns",
-			Severity:    "medium",
+			Type:            "no_progress",
+			Description:     "No file changes in recent turns",
+			Severity:        "medium",
 			SuggestedAction: "Verify task clarity or try different approach",
 		})
 	}
@@ -86,9 +86,9 @@ func (sd *StuckDetector) Analyze(activities []Activity) []StuckSignal {
 	// Check for token spike
 	if sd.detectTokenSpike(activities) {
 		signals = append(signals, StuckSignal{
-			Type:        "token_spike",
-			Description: "Unusual token usage increase",
-			Severity:    "medium",
+			Type:            "token_spike",
+			Description:     "Unusual token usage increase",
+			Severity:        "medium",
 			SuggestedAction: "Monitor for potential loop or verbose output",
 		})
 	}
@@ -96,9 +96,9 @@ func (sd *StuckDetector) Analyze(activities []Activity) []StuckSignal {
 	// Check duration
 	if sd.detectLongDuration(activities) {
 		signals = append(signals, StuckSignal{
-			Type:        "long_duration",
-			Description: "Session running longer than expected",
-			Severity:    "low",
+			Type:            "long_duration",
+			Description:     "Session running longer than expected",
+			Severity:        "low",
 			SuggestedAction: "Consider breaking task into smaller parts",
 		})
 	}

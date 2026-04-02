@@ -29,14 +29,14 @@ type PerformanceTracker struct {
 
 // PerformanceRecord tracks performance for a model on a task type
 type PerformanceRecord struct {
-	Model        string
-	TaskType     string
-	Attempts     int
-	Successes    int
-	TotalCost    float64
-	AvgCost      float64
-	AvgDuration  float64 // seconds
-	SuccessRate  float64
+	Model       string
+	TaskType    string
+	Attempts    int
+	Successes   int
+	TotalCost   float64
+	AvgCost     float64
+	AvgDuration float64 // seconds
+	SuccessRate float64
 }
 
 // NewSpecialistRouter creates a new specialist router
@@ -82,10 +82,10 @@ func NewSpecialistRouter() *SpecialistRouter {
 
 // RouteResult represents a routing decision
 type RouteResult struct {
-	Model       string
-	Provider    string
-	Reason      string
-	Confidence  float64
+	Model      string
+	Provider   string
+	Reason     string
+	Confidence float64
 }
 
 // Route selects the best model for a task

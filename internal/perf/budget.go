@@ -31,14 +31,14 @@ type PerformanceBudget struct {
 
 // BudgetMetrics tracks actual vs budget
 type BudgetMetrics struct {
-	Project          string
-	Budget           PerformanceBudget
-	AvgResponseTime  time.Duration
-	AvgTokensPerReq  int64
-	AvgCostPerReq    float64
-	PeakMemoryMB     int64
-	ConcurrentReqs   int
-	Violations       []BudgetViolation
+	Project         string
+	Budget          PerformanceBudget
+	AvgResponseTime time.Duration
+	AvgTokensPerReq int64
+	AvgCostPerReq   float64
+	PeakMemoryMB    int64
+	ConcurrentReqs  int
+	Violations      []BudgetViolation
 }
 
 // BudgetViolation represents a budget violation

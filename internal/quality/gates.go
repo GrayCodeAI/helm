@@ -10,11 +10,11 @@ import (
 
 // GateConfig configures quality gates
 type GateConfig struct {
-	Lint       bool
-	Test       bool
-	Security   bool
-	Complexity bool
-	Build      bool
+	Lint          bool
+	Test          bool
+	Security      bool
+	Complexity    bool
+	Build         bool
 	MaxComplexity int
 }
 
@@ -49,10 +49,10 @@ type GateResult struct {
 
 // SingleGateResult represents the result of a single gate
 type SingleGateResult struct {
-	Name    string
-	Passed  bool
-	Output  string
-	Errors  []string
+	Name   string
+	Passed bool
+	Output string
+	Errors []string
 }
 
 // RunAll runs all enabled gates

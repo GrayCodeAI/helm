@@ -31,11 +31,11 @@ type ArchitectureMap struct {
 
 // Package represents a package in the codebase
 type Package struct {
-	Path      string
-	Name      string
-	Files     []File
-	Imports   []string
-	Layer     string
+	Path    string
+	Name    string
+	Files   []File
+	Imports []string
+	Layer   string
 }
 
 // File represents a source file
@@ -198,11 +198,11 @@ func (aa *ArchitectureAnalyzer) detectCycles(arch *ArchitectureMap) [][]string {
 
 // ArchitectureReport represents an architecture analysis report
 type ArchitectureReport struct {
-	TotalPackages  int
-	TotalFiles     int
-	LayerCounts    map[string]int
-	CyclicDeps     [][]string
-	HasCycles      bool
+	TotalPackages   int
+	TotalFiles      int
+	LayerCounts     map[string]int
+	CyclicDeps      [][]string
+	HasCycles       bool
 	Recommendations []string
 }
 
@@ -264,9 +264,9 @@ func NewImportGraphBuilder(repoPath string) *ImportGraphBuilder {
 
 // Node represents a node in the import graph
 type Node struct {
-	ID       string
-	Label    string
-	Group    string
+	ID    string
+	Label string
+	Group string
 }
 
 // Edge represents an edge in the import graph

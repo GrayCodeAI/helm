@@ -4,6 +4,7 @@ package session
 import (
 	"context"
 	"fmt"
+	"strings"
 	"time"
 
 	"github.com/google/uuid"
@@ -291,12 +292,7 @@ func (fm *ForkManager) GetContextForFork(ctx context.Context, forkID string) (st
 	}
 
 	// Join context parts
-	result := ""
-	for _, part := range contextParts {
-		result += part + "\n"
-	}
-
-	return result, nil
+	return strings.Join(contextParts, "\n") + "\n", nil
 }
 
 // CleanupWorktrees removes all fork worktrees

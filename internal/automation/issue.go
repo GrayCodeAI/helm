@@ -11,18 +11,18 @@ import (
 
 // Issue represents a GitHub/GitLab issue
 type Issue struct {
-	ID          int
-	Number      int
-	Title       string
-	Body        string
-	State       string
-	Labels      []string
-	Assignee    string
-	CreatedAt   time.Time
-	UpdatedAt   time.Time
-	URL         string
-	Repository  string
-	Provider    string // "github" or "gitlab"
+	ID         int
+	Number     int
+	Title      string
+	Body       string
+	State      string
+	Labels     []string
+	Assignee   string
+	CreatedAt  time.Time
+	UpdatedAt  time.Time
+	URL        string
+	Repository string
+	Provider   string // "github" or "gitlab"
 }
 
 // IssueFetcher fetches issues from GitHub/GitLab
@@ -65,14 +65,14 @@ func (f *IssueFetcher) FetchGitHubIssues(ctx context.Context, owner, repo string
 	}
 
 	var ghIssues []struct {
-		Number    int        `json:"number"`
-		Title     string     `json:"title"`
-		Body      string     `json:"body"`
-		State     string     `json:"state"`
-		Labels    []struct {
+		Number int    `json:"number"`
+		Title  string `json:"title"`
+		Body   string `json:"body"`
+		State  string `json:"state"`
+		Labels []struct {
 			Name string `json:"name"`
 		} `json:"labels"`
-		Assignee  *struct {
+		Assignee *struct {
 			Login string `json:"login"`
 		} `json:"assignee"`
 		CreatedAt time.Time `json:"created_at"`
@@ -134,14 +134,14 @@ func (f *IssueFetcher) FetchGitLabIssues(ctx context.Context, projectID string, 
 	}
 
 	var glIssues []struct {
-		Iid       int       `json:"iid"`
-		Title     string    `json:"title"`
-		Description string  `json:"description"`
-		State     string    `json:"state"`
-		Labels    []string  `json:"labels"`
-		CreatedAt time.Time `json:"created_at"`
-		UpdatedAt time.Time `json:"updated_at"`
-		WebURL    string    `json:"web_url"`
+		Iid         int       `json:"iid"`
+		Title       string    `json:"title"`
+		Description string    `json:"description"`
+		State       string    `json:"state"`
+		Labels      []string  `json:"labels"`
+		CreatedAt   time.Time `json:"created_at"`
+		UpdatedAt   time.Time `json:"updated_at"`
+		WebURL      string    `json:"web_url"`
 	}
 
 	if err := json.NewDecoder(resp.Body).Decode(&glIssues); err != nil {

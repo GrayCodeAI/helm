@@ -154,7 +154,7 @@ func (v *Viewer) viewHunk(hunk Hunk, isSelected bool) string {
 	addStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#22c55e")).
 		Background(lipgloss.Color("#dcfce7"))
-		removeStyle := lipgloss.NewStyle().
+	removeStyle := lipgloss.NewStyle().
 		Foreground(lipgloss.Color("#ef4444")).
 		Background(lipgloss.Color("#fee2e2"))
 

@@ -14,6 +14,7 @@ import (
 	"github.com/yourname/helm/internal/prompt"
 	"github.com/yourname/helm/internal/provider"
 	"github.com/yourname/helm/internal/session"
+	"github.com/yourname/helm/internal/ui"
 )
 
 // App is the main application container.
@@ -77,9 +78,9 @@ func providerConfigFromConfig(cfg *config.Config) provider.RouterConfig {
 	var providers []provider.ProviderConfig
 	if cfg.Providers.Anthropic.APIKey != "" {
 		providers = append(providers, provider.ProviderConfig{
-			Name:     "anthropic",
-			APIKey:   cfg.Providers.Anthropic.APIKey,
-			BaseURL:  cfg.Providers.Anthropic.BaseURL,
+			Name:    "anthropic",
+			APIKey:  cfg.Providers.Anthropic.APIKey,
+			BaseURL: cfg.Providers.Anthropic.BaseURL,
 		})
 	}
 	if cfg.Providers.OpenAI.APIKey != "" {
@@ -103,21 +104,22 @@ func providerConfigFromConfig(cfg *config.Config) provider.RouterConfig {
 	}
 
 	return provider.RouterConfig{
-		Providers:      providers,
-		FallbackChain:  cfg.Router.FallbackChain,
-		MaxRetries:     cfg.Router.MaxRetries,
+		Providers:     providers,
+		FallbackChain: cfg.Router.FallbackChain,
+		MaxRetries:    cfg.Router.MaxRetries,
 	}
 }
 
 // RunTUI starts the TUI application.
 func (a *App) RunTUI() error {
-	// TUI will be implemented in internal/ui
-	return fmt.Errorf("TUI not yet implemented")
+	return ui.Run(a.DB)
 }
 
 // Close cleans up resources.
 func (a *App) Close() error {
-	// Close database connection, etc.
+	if a.DB != nil {
+		return a.DB.Close()
+	}
 	return nil
 }
 

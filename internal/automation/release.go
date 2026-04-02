@@ -33,11 +33,11 @@ func NewReleaseAutomation(remote, branch string) *ReleaseAutomation {
 
 // ReleaseResult represents the result of a release
 type ReleaseResult struct {
-	Version     string
-	Tag         string
-	Changelog   string
-	ReleaseURL  string
-	Error       error
+	Version    string
+	Tag        string
+	Changelog  string
+	ReleaseURL string
+	Error      error
 }
 
 // Run executes the release pipeline

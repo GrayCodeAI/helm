@@ -21,10 +21,10 @@ func NewDriftDetector(repoPath string) *DriftDetector {
 
 // DriftReport represents architecture drift findings
 type DriftReport struct {
-	Deviations      []Deviation
-	MissingLayers   []string
+	Deviations        []Deviation
+	MissingLayers     []string
 	PatternViolations []PatternViolation
-	DocUpdatesNeeded []string
+	DocUpdatesNeeded  []string
 }
 
 // Deviation represents a deviation from documented architecture
@@ -38,10 +38,10 @@ type Deviation struct {
 
 // PatternViolation represents a pattern violation
 type PatternViolation struct {
-	Pattern       string
-	FilePath      string
-	Violation     string
-	SuggestedFix  string
+	Pattern      string
+	FilePath     string
+	Violation    string
+	SuggestedFix string
 }
 
 // DetectDrift detects architecture drift
@@ -76,9 +76,9 @@ func (dd *DriftDetector) DetectDrift(ctx context.Context) (*DriftReport, error) 
 
 // ArchitectureDoc represents documented architecture
 type ArchitectureDoc struct {
-	Layers          []string
-	Patterns        []ArchitecturePattern
-	Dependencies    map[string][]string
+	Layers       []string
+	Patterns     []ArchitecturePattern
+	Dependencies map[string][]string
 }
 
 // ArchitecturePattern represents a documented pattern

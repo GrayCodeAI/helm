@@ -107,7 +107,6 @@ var costSetBudgetCmd = &cobra.Command{
 	},
 }
 
-
 func min(a, b int) int {
 	if a < b {
 		return a

@@ -195,11 +195,11 @@ func generateSuggestion(t Type, description string) string {
 
 // Rule represents a correction rule derived from mistakes
 type Rule struct {
-	ID          string
-	Pattern     string
-	Correction  string
-	Confidence  float64
-	AppliesTo   []string // file patterns
+	ID         string
+	Pattern    string
+	Correction string
+	Confidence float64
+	AppliesTo  []string // file patterns
 }
 
 // GenerateRules creates correction rules from patterns

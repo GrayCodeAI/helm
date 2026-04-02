@@ -29,19 +29,19 @@ type SessionComparison struct {
 
 // ComparisonMetrics contains comparison metrics
 type ComparisonMetrics struct {
-	CostDelta        float64
-	TokenDelta       int64
-	DurationDelta    float64
+	CostDelta         float64
+	TokenDelta        int64
+	DurationDelta     float64
 	MessageCountDelta int
-	FileChangeDelta  int
+	FileChangeDelta   int
 }
 
 // Difference represents a difference between sessions
 type Difference struct {
-	Type        string // "cost", "token", "file", "message"
-	Description string
-	ValueA      interface{}
-	ValueB      interface{}
+	Type         string // "cost", "token", "file", "message"
+	Description  string
+	ValueA       interface{}
+	ValueB       interface{}
 	Significance float64 // 0-1 how significant
 }
 
@@ -133,14 +133,14 @@ func (c *Comparator) calculateSimilarity(diffs []Difference) float64 {
 
 // ComparePrompts compares different prompts for the same task
 type PromptComparison struct {
-	PromptA     string
-	PromptB     string
-	ResultsA    []db.Session
-	ResultsB    []db.Session
-	AvgCostA    float64
-	AvgCostB    float64
-	AvgTimeA    float64
-	AvgTimeB    float64
+	PromptA      string
+	PromptB      string
+	ResultsA     []db.Session
+	ResultsB     []db.Session
+	AvgCostA     float64
+	AvgCostB     float64
+	AvgTimeA     float64
+	AvgTimeB     float64
 	SuccessRateA float64
 	SuccessRateB float64
 }

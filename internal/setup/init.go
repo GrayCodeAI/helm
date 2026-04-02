@@ -12,10 +12,10 @@ import (
 
 // InitResult contains the results of helm init.
 type InitResult struct {
-	ProjectInfo    ProjectInfo
-	Providers      map[string]bool
-	MemoriesAdded  int
-	ConfigPath     string
+	ProjectInfo      ProjectInfo
+	Providers        map[string]bool
+	MemoriesAdded    int
+	ConfigPath       string
 	PromptsSuggested []string
 }
 

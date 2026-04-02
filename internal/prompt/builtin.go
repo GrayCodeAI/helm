@@ -152,8 +152,8 @@ Guidelines:
 - Update to latest compatible versions
 - Note any breaking changes
 - Run tests after updating`,
-			Variables:   []PromptVariable{},
-			Source:      "builtin",
+			Variables: []PromptVariable{},
+			Source:    "builtin",
 		},
 		{
 			Name:        "security",

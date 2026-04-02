@@ -22,7 +22,7 @@ func newMockQuerier() *mockQuerier {
 type mockResult struct{}
 
 func (m mockResult) LastInsertId() (int64, error) { return 0, nil }
-func (m mockResult) RowsAffected() (int64, error)  { return 1, nil }
+func (m mockResult) RowsAffected() (int64, error) { return 1, nil }
 
 func (m *mockQuerier) CreateMemory(ctx context.Context, arg db.CreateMemoryParams) (sql.Result, error) {
 	m.memories[arg.ID] = db.Memory{

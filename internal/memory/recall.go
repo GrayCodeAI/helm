@@ -8,8 +8,8 @@ import (
 
 // RecallResult holds memories ranked by relevance.
 type RecallResult struct {
-	Memory   MemoryEntry
-	Score    float64
+	Memory MemoryEntry
+	Score  float64
 }
 
 // Recall retrieves relevant memories for a session based on the prompt.

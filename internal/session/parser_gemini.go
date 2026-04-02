@@ -16,11 +16,11 @@ func NewGeminiParser() *GeminiParser {
 func (p *GeminiParser) Provider() string { return "google" }
 
 type geminiLine struct {
-	Role    string `json:"role"`
-	Parts   []struct {
+	Role  string `json:"role"`
+	Parts []struct {
 		Text string `json:"text"`
 	} `json:"parts"`
-	Model       string `json:"model"`
+	Model         string `json:"model"`
 	UsageMetadata struct {
 		PromptTokenCount     int `json:"promptTokenCount"`
 		CandidatesTokenCount int `json:"candidatesTokenCount"`

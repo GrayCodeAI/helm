@@ -9,27 +9,27 @@ import (
 
 // ABTest runs parallel agents and compares results
 type ABTest struct {
-	agentA       *Agent
-	agentB       *Agent
-	comparator   *Comparator
+	agentA     *Agent
+	agentB     *Agent
+	comparator *Comparator
 }
 
 // ABConfig configures the A/B test
 type ABConfig struct {
-	Task        string
-	ModelA      string
-	ModelB      string
-	Timeout     time.Duration
-	Criteria    []string // "cost", "time", "quality"
+	Task     string
+	ModelA   string
+	ModelB   string
+	Timeout  time.Duration
+	Criteria []string // "cost", "time", "quality"
 }
 
 // ABResult represents the results of an A/B test
 type ABResult struct {
-	Winner      string // "A", "B", or "tie"
-	AgentA      AgentResult
-	AgentB      AgentResult
-	Comparison  ComparisonResult
-	Duration    time.Duration
+	Winner     string // "A", "B", or "tie"
+	AgentA     AgentResult
+	AgentB     AgentResult
+	Comparison ComparisonResult
+	Duration   time.Duration
 }
 
 // AgentResult represents the result from a single agent
@@ -45,11 +45,11 @@ type AgentResult struct {
 
 // ComparisonResult represents the comparison between two agents
 type ComparisonResult struct {
-	CostWinner      string
-	TimeWinner      string
-	QualityWinner   string
-	OverallWinner   string
-	DiffSummary     string
+	CostWinner    string
+	TimeWinner    string
+	QualityWinner string
+	OverallWinner string
+	DiffSummary   string
 }
 
 // NewABTest creates a new A/B test

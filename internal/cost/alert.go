@@ -10,28 +10,28 @@ import (
 type AlertType string
 
 const (
-	AlertTypeWarning AlertType = "warning"
+	AlertTypeWarning  AlertType = "warning"
 	AlertTypeCritical AlertType = "critical"
 	AlertTypeExceeded AlertType = "exceeded"
 )
 
 // Alert represents a budget alert
 type Alert struct {
-	ID          string
-	Type        AlertType
-	Project     string
-	Message     string
-	CurrentCost float64
-	Limit       float64
-	Percentage  float64
-	CreatedAt   time.Time
+	ID           string
+	Type         AlertType
+	Project      string
+	Message      string
+	CurrentCost  float64
+	Limit        float64
+	Percentage   float64
+	CreatedAt    time.Time
 	Acknowledged bool
 }
 
 // AlertManager manages budget alerts
 type AlertManager struct {
-	alerts      []Alert
-	handlers    []AlertHandler
+	alerts       []Alert
+	handlers     []AlertHandler
 	soundEnabled bool
 }
 
@@ -204,7 +204,7 @@ func (h *ConsoleHandler) Handle(alert Alert) error {
 
 // EnforcementEngine enforces budget limits
 type EnforcementEngine struct {
-	alertManager *AlertManager
+	alertManager  *AlertManager
 	actionOnLimit string // "pause", "stop", "notify"
 }
 

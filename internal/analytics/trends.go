@@ -21,13 +21,13 @@ func NewTrendAnalyzer(querier db.Querier) *TrendAnalyzer {
 
 // TrendReport represents trend analysis
 type TrendReport struct {
-	Period          string
-	StartDate       time.Time
-	EndDate         time.Time
-	CostTrend       []DataPoint
+	Period            string
+	StartDate         time.Time
+	EndDate           time.Time
+	CostTrend         []DataPoint
 	ProductivityTrend []DataPoint
-	ModelTrends     map[string][]DataPoint
-	Insights        []string
+	ModelTrends       map[string][]DataPoint
+	Insights          []string
 }
 
 // DataPoint represents a single data point
