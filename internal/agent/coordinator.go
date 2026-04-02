@@ -4,6 +4,8 @@ package agent
 import (
 	"context"
 	"fmt"
+	"strings"
+	"sync"
 	"time"
 
 	"github.com/yourname/helm/internal/provider"
@@ -32,12 +34,28 @@ type ToolResult struct {
 	Error  string `json:"error,omitempty"`
 }
 
+// QueuedPrompt is a prompt waiting to be processed
+type QueuedPrompt struct {
+	ID        string
+	Content   string
+	Timestamp time.Time
+}
+
 // Coordinator manages the agent conversation loop
 type Coordinator struct {
-	provider provider.Provider
-	tools    map[string]ToolHandler
-	maxTurns int
-	broker   *pubsub.Broker
+	provider      provider.Provider
+	tools         map[string]ToolHandler
+	maxTurns      int
+	broker        *pubsub.Broker
+	queue         []QueuedPrompt
+	queueMu       sync.Mutex
+	cancel        context.CancelFunc
+	ctx           context.Context
+	isBusy        bool
+	summary       string
+	largeModel    provider.Provider
+	smallModel    provider.Provider
+	contextWindow int
 }
 
 // ToolHandler handles tool execution
@@ -45,8 +63,11 @@ type ToolHandler func(ctx context.Context, args string) (string, error)
 
 // Config configures the coordinator
 type Config struct {
-	Provider provider.Provider
-	MaxTurns int
+	Provider      provider.Provider
+	MaxTurns      int
+	LargeModel    provider.Provider
+	SmallModel    provider.Provider
+	ContextWindow int
 }
 
 // NewCoordinator creates a new agent coordinator
@@ -54,11 +75,20 @@ func NewCoordinator(cfg Config, broker *pubsub.Broker) *Coordinator {
 	if cfg.MaxTurns == 0 {
 		cfg.MaxTurns = 50
 	}
+	if cfg.ContextWindow == 0 {
+		cfg.ContextWindow = 128000 // Default context window
+	}
+	ctx, cancel := context.WithCancel(context.Background())
 	return &Coordinator{
-		provider: cfg.Provider,
-		tools:    make(map[string]ToolHandler),
-		maxTurns: cfg.MaxTurns,
-		broker:   broker,
+		provider:      cfg.Provider,
+		tools:         make(map[string]ToolHandler),
+		maxTurns:      cfg.MaxTurns,
+		broker:        broker,
+		largeModel:    cfg.LargeModel,
+		smallModel:    cfg.SmallModel,
+		contextWindow: cfg.ContextWindow,
+		ctx:           ctx,
+		cancel:        cancel,
 	}
 }
 
@@ -67,8 +97,47 @@ func (c *Coordinator) RegisterTool(name string, handler ToolHandler) {
 	c.tools[name] = handler
 }
 
+// QueuePrompt adds a prompt to the queue
+func (c *Coordinator) QueuePrompt(content string) string {
+	c.queueMu.Lock()
+	defer c.queueMu.Unlock()
+
+	id := fmt.Sprintf("prompt-%d", time.Now().UnixNano())
+	c.queue = append(c.queue, QueuedPrompt{
+		ID:        id,
+		Content:   content,
+		Timestamp: time.Now(),
+	})
+
+	if c.broker != nil {
+		c.broker.Publish("prompt.queued", map[string]interface{}{
+			"id":      id,
+			"content": content,
+		})
+	}
+
+	return id
+}
+
+// GetQueuedPrompts returns all queued prompts
+func (c *Coordinator) GetQueuedPrompts() []QueuedPrompt {
+	c.queueMu.Lock()
+	defer c.queueMu.Unlock()
+	return c.queue
+}
+
+// ClearQueue clears the prompt queue
+func (c *Coordinator) ClearQueue() {
+	c.queueMu.Lock()
+	defer c.queueMu.Unlock()
+	c.queue = nil
+}
+
 // Run executes the conversation loop
 func (c *Coordinator) Run(ctx context.Context, systemPrompt string, messages []Message) ([]Message, error) {
+	c.isBusy = true
+	defer func() { c.isBusy = false }()
+
 	allMessages := append([]Message{{
 		Role:    "system",
 		Content: systemPrompt,
@@ -79,12 +148,26 @@ func (c *Coordinator) Run(ctx context.Context, systemPrompt string, messages []M
 		select {
 		case <-ctx.Done():
 			return allMessages, ctx.Err()
+		case <-c.ctx.Done():
+			return allMessages, fmt.Errorf("coordinator cancelled")
 		default:
 		}
 
+		// Check context window and summarize if needed
+		if c.needsSummarization(allMessages) {
+			summary, err := c.summarize(ctx, allMessages)
+			if err == nil {
+				c.summary = summary
+				allMessages = c.trimMessages(allMessages, summary)
+			}
+		}
+
+		// Select model based on task complexity
+		model := c.selectModel(allMessages)
+
 		// Call provider
 		req := provider.ChatRequest{
-			Model:    "default",
+			Model:    model,
 			Messages: toProviderMessages(allMessages),
 		}
 
@@ -149,7 +232,91 @@ func (c *Coordinator) Run(ctx context.Context, systemPrompt string, messages []M
 
 // Cancel stops the coordinator
 func (c *Coordinator) Cancel() {
-	// Cancel any running operations
+	if c.cancel != nil {
+		c.cancel()
+	}
+	c.isBusy = false
+}
+
+// IsBusy returns true if coordinator is processing
+func (c *Coordinator) IsBusy() bool {
+	return c.isBusy
+}
+
+// GetSummary returns the current conversation summary
+func (c *Coordinator) GetSummary() string {
+	return c.summary
+}
+
+// needsSummarization checks if messages need summarization
+func (c *Coordinator) needsSummarization(messages []Message) bool {
+	totalTokens := 0
+	for _, m := range messages {
+		// Rough estimate: 1 token per 4 characters
+		totalTokens += len(m.Content) / 4
+	}
+	return totalTokens > c.contextWindow/2
+}
+
+// summarize generates a summary of the conversation
+func (c *Coordinator) summarize(ctx context.Context, messages []Message) (string, error) {
+	// Use small model for summarization
+	if c.smallModel != nil {
+		summaryReq := provider.ChatRequest{
+			Model: "default",
+			Messages: []provider.Message{
+				{Role: "system", Content: "Summarize this conversation concisely."},
+				{Role: "user", Content: formatMessagesForSummary(messages)},
+			},
+		}
+		resp, err := c.smallModel.Chat(ctx, summaryReq)
+		if err == nil {
+			return resp.Content, nil
+		}
+	}
+
+	// Fallback: simple truncation
+	return "Conversation summarized due to length", nil
+}
+
+// trimMessages trims messages keeping only recent ones and summary
+func (c *Coordinator) trimMessages(messages []Message, summary string) []Message {
+	// Keep system message, summary, and last few messages
+	var trimmed []Message
+	for _, m := range messages {
+		if m.Role == "system" {
+			trimmed = append(trimmed, m)
+		}
+	}
+
+	// Add summary
+	trimmed = append(trimmed, Message{
+		Role:    "assistant",
+		Content: fmt.Sprintf("[Summary of previous conversation: %s]", summary),
+	})
+
+	// Keep last 10 messages
+	if len(messages) > 10 {
+		trimmed = append(trimmed, messages[len(messages)-10:]...)
+	} else {
+		trimmed = append(trimmed, messages[1:]...)
+	}
+
+	return trimmed
+}
+
+// selectModel selects the appropriate model based on task complexity
+func (c *Coordinator) selectModel(messages []Message) string {
+	// Simple heuristic: use large model for complex tasks
+	totalContent := 0
+	for _, m := range messages {
+		totalContent += len(m.Content)
+	}
+
+	if totalContent > 5000 && c.largeModel != nil {
+		return "large"
+	}
+	return "default"
 }
 
 func toProviderMessages(messages []Message) []provider.Message {
@@ -161,4 +328,12 @@ func toProviderMessages(messages []Message) []provider.Message {
 		}
 	}
 	return result
+}
+
+func formatMessagesForSummary(messages []Message) string {
+	var sb strings.Builder
+	for _, m := range messages {
+		sb.WriteString(fmt.Sprintf("[%s]: %s\n", m.Role, m.Content))
+	}
+	return sb.String()
 }
